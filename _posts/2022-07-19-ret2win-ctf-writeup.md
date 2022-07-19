@@ -104,7 +104,7 @@ buffer overflow.
 
 You may notice that the call to `gets` doesn't have a length parameter. That is because it is not bounds checked.
 It simply continues taking in characters and writing to its buffer until input ends. Well since `buf` is right
-below `ebp` and `return_address` in the stack, this means that itcould potentially overwrite those values if
+below `ebp` and `return_address` in the stack, this means that it could potentially overwrite those values if
 we input more than 16 characters. Let's test this theory. For our input let's enter "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".
 
 ```
@@ -116,8 +116,8 @@ Returning to 0x6161616161616161...
 [1]    637 segmentation fault (core dumped)  ./vuln
 ```
 
-We crashed! You'll see the address we tried to while invalid is exactly what we wanted: a bunch of 'a's or 0x61 in hex
-in the return address. Now we just have to carefully craft our input overwrite the `return_address` with `win`s starting address.
+We crashed! You'll see the address we tried to return to while invalid is exactly what we wanted: a bunch of 'a's or 0x61 in hex.
+Now we just have to carefully craft our input to overwrite the `return_address` with `win`s starting address.
 
 To get `win`s starting address we can use a linux utility called `objdump`. This program will take in a binary and
 spit out its assembly code along with any symbols it can find. Running `objdump -D ./vuln` will display a lot of assembly code including...
@@ -151,7 +151,7 @@ We have it! The address we need to jump to is `0x4011d6`. Now we can move on to 
 
 To craft our payload, I'll just be using `echo`, but other
 methods can also work to send non-character data. First, we will send 16 'a's to just fill up the buffer. Then, another
-8 bytes of any non-zero values. Lastly, we send `0x4011d6` in little endian as a 64 bit number. When, going over netcat
+8 bytes of any non-zero values to fill out `ebp`. Lastly, we send `0x4011d6` in little endian as a 64 bit number. When, going over netcat
 it will be necessary that we also send a newline since the input buffer is still open.
 
 ```sh
