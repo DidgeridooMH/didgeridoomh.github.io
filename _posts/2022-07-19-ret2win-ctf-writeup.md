@@ -1,9 +1,10 @@
 ---
-layout: default
+layout: post
 title: "ret2win CTF Writeup"
+excerpt: One of the most common exploit problems presented in CTFs are "ret2win" problems. Naturally ImaginaryCTF has a 100 point ret2win to get noobies their toes wet and experienced players a chance to warm.
 ---
 
-# The Problem
+## The Problem
 
 One of the most common exploit problems presented in CTFs are "ret2win" problems.
 Naturally ImaginaryCTF has a 100 point ret2win to get noobies their toes wet and
@@ -19,7 +20,7 @@ is running on.
 [vuln.c](https://imaginaryctf.org/r/IDlsV#vuln.c)
 `nc ret2win.chal.imaginaryctf.org 1337`
 
-# The Source, a binary, and the Server Soon To Be Pwned
+## The Source, a binary, and the Server Soon To Be Pwned
 
 Running the binary presents the user with a prompt:
 
@@ -78,7 +79,7 @@ we saw is displayed, a string is read into `buf`, and the address `return_addres
 However, there is something wrong here. The `win` function is never called. So this challenge must not be
 possible right? Well, it is, but we need a bit of knowledge of how x86 uses the stack and a buffer overflow.
 
-# The Stack Demystified
+## The Stack Demystified
 
 Operating systems like Linux use the stack in a predictable way. When entering a function, they save a
 pointer to where they left off on the stack. This pointer is what is popped off when `return` is called
@@ -99,7 +100,7 @@ So, since our goal is to run `win` to get our flag value, maybe instead of havin
 could somehow have it return to a different address; Say the start of `win`. For this we will need one more thing: a
 buffer overflow.
 
-# Buffer Overflow
+## Buffer Overflow
 
 You may notice that the call to `gets` doesn't have a length parameter. That is because it is not bounds checked.
 It simply continues taking in characters and writing to its buffer until input ends. Well since `buf` is right
@@ -146,7 +147,7 @@ spit out its assembly code along with any symbols it can find. Running `objdump 
 
 We have it! The address we need to jump to is `0x4011d6`. Now we can move on to our attack.
 
-# The Exploit
+## The Exploit
 
 To craft our payload, I'll just be using `echo`, but other
 methods can also work to send non-character data. First, we will send 16 'a's to just fill up the buffer. Then, another
