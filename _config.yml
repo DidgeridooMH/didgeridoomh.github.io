@@ -1,4 +1,7 @@
 theme: jekyll-theme-slate
 title: Daniel Simpkins's Github Pages
 description: A place for CTF writeups, emulator development, and nerdy electronics stuff.
+remote_theme: pages-themes/slate@v0.2.0
+plugins:
+  - jekyll-remote-theme # add this line to the plugins list if you already have one
 
